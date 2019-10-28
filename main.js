@@ -207,7 +207,15 @@ function showTime(time){
   }
   //weeks
   week = parseInt(time/604800);
-  s = week+"w "+s;
+  if(week<52){
+    return week+"w "+s;
+  }else{
+      week = (week%52)+1;
+      s = week+"w "+s;
+  }
+  //years
+  year = parseInt(time/31536000);
+  s = year+"y "+s;
   return s
 }
 function showSpace(){
