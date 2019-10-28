@@ -97,11 +97,14 @@ function buyHand(num){
 }
 
 window.setInterval(function(){
-  updateDisplay();
   tick+=1;
   if(tick%1==0){
     timeClick(secondHands);
   }
+  if(tick%10==0){
+    save();
+  }
+  updateDisplay();
 },1000)
 
 
@@ -144,6 +147,11 @@ function updateDisplay(){
     document.getElementById("hours").style.display = "none";
   }
   document.getElementById("realtime").innerHTML = showTime(tick);
+  if(tick%10==0){
+    document.getElementById("saving").innerHTML = "saving...";
+  }else{
+    document.getElementById("saving").innerHTML = "";
+  }
   //initLocalClocks();
 }
 
