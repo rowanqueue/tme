@@ -80,6 +80,30 @@ function setUpMinuteHands() {
      containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
    }
  }
+ function moveDayHands(){
+   var containers = document.querySelectorAll('.days-container');
+   for (var i = 0; i < containers.length; i++) {
+     if (containers[i].angle === undefined) {
+       containers[i].angle = (360/7);
+     } else {
+       containers[i].angle +=(360/7);
+     }
+     containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+     containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+   }
+ }
+ function moveDayHands(){
+   var containers = document.querySelectorAll('.weeks-container');
+   for (var i = 0; i < containers.length; i++) {
+     if (containers[i].angle === undefined) {
+       containers[i].angle = (360/52);
+     } else {
+       containers[i].angle +=(360/52);
+     }
+     containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+     containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+   }
+ }
 /*function moveMinuteHands(containers) {
 
   for (var i = 0; i < containers.length; i++) {
@@ -135,10 +159,27 @@ containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
 containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
 }
 }
+function setDayHands(){
+  var containers = document.querySelectorAll('.days-container');
+for (var i = 0; i < containers.length; i++) {
+  containers[i].angle = (((Math.floor(time/86400)%7)) * (360/7));
+containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+}
+}
+function setWeekHands(){
+  var containers = document.querySelectorAll('.weeks-container');
+for (var i = 0; i < containers.length; i++) {
+  containers[i].angle = (((Math.floor(time/604800)%52)) * (360/52));
+containers[i].style.webkitTransform = 'rotateZ('+ containers[i].angle +'deg)';
+containers[i].style.transform = 'rotateZ('+ containers[i].angle +'deg)';
+}
+}
 function setHands(){
   setSecondHands();
   setMinuteHands();
   setHourHands();
+  setDayHands();
 }
 /*function moveSecondHands() {
   var containers = document.querySelectorAll('.seconds-container');

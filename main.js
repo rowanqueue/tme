@@ -1,17 +1,20 @@
 var time = 0;var timeTotal = 0;var timeMax = 0;
 var coefficient = 1.1;
 
-var secondUnlock = 1;
-var secondHands = 1;//make time for you
-var secondHandCost = 15; var secondHandStartCost = secondHandCost;
+var updateTick = 1000;
+var maxMade = 5;
+var names = ["second","minute","hour","day","week"];
+var unit = ["s","m","h","d","w"];
+var unlock = [1,60,3600,86400,604800];
+var amount = [1,60,3600,86400,604800];
+var threshold = [60,3600,86400,604800,31536000];
+var hands = [0,0,0,0,0];
+var starthands = [hands[0],hands[1],hands[2],hands[3],hands[4]];
+var handCost = [15,15*60,15*3600,15*86400,15*604800];
+var startCost = [handCost[0],handCost[1],handCost[2],handCost[3],handCost[4]];
 
-var minuteUnlock = 60;//when it shows up
-var minuteHands = 1;//make time for you
-var minuteHandCost = 15*60; var minuteHandStartCost = minuteHandCost;
+var timeSpeed = 0;
 
-var hourUnlock = 3600;//when it shows up
-var hourHands = 1;//make time for you
-var hourHandCost = 15*3600; var hourHandStartCost = hourHandCost;
 
 //helper variables
 var second = 1;
@@ -19,8 +22,76 @@ var minute = 60;
 var hour = 3600;
 var day = 86400;
 var week =604800;
+var year =31536000;
 
 var tick = 0;
+function cheat(){
+  hands[0] = 30;
+  hands[1] = 0;
+  hands[2] = 0;
+  setHands();
+  updateDisplay();
+}
+function newTimeClick(l){
+  var numHands = hands[l];
+  if(l!=0){
+    numHands-=1;
+    switch(l){
+        case 0:
+          moveSecondHands();
+          break;
+        case 1:
+          moveMinuteHands();
+          break;
+        case 2:
+          moveHourHands();
+          break;
+        case 3:
+          moveDayHands();
+          break;
+        case 4:
+          moveWeekHands();
+          break;
+    }
+  }
+  if(l==-1){
+    l = 0;
+    numHands = 1;
+  }
+  for(var i = 0; i < numHands;i++){
+    var old_time_chunk = Math.floor(time>threshold[l]);
+    time+=amount[l];
+    timeTotal+=amount[l];
+    switch(l){
+        case 0:
+          moveSecondHands();
+          break;
+        case 1:
+          moveMinuteHands();
+          break;
+        case 2:
+          moveHourHands();
+          break;
+        case 3:
+          moveDayHands();
+          break;
+        case 4:
+          moveWeekHands();
+          break;
+    }
+    if(time%threshold[l]==0 || Math.floor(time>threshold[l]) > old_time_chunk){
+      if(l<maxMade){
+        newTimeClick(l+1);
+      }
+    }
+  }
+  if(time>timeMax){
+    timeMax = time;
+  }
+  updateDisplay();
+
+
+}
 function timeClick(num){
   for(var i =0; i <num;i++){
     time+=1;
@@ -29,29 +100,44 @@ function timeClick(num){
     if(time%60==0){
       //spaceClick();
       moveMinuteHands();
-      for(var j =0; j<minuteHands-1;j++){
+      for(var j =0; j<hands[1]-1;j++){
         moveMinuteHands();
-        var old_time = time%3600;//if this is higher than new time, you went to a new hour!
+        var old_time_hour = time%3600;//if this is higher than new time, you went to a new hour!
+        var old_time_day = time%86400;//if tihs is higher than new, you went to a new day!
         time+=60;
         timeTotal+=60;
-        if(time%3600<old_time){
+        if(time%86400<old_time_day){
+          moveDayHands();
+        }
+        if(time%3600<old_time_hour){
           moveHourHands();
-          for(var k=0;k<hourHands-1;k++){
+          for(var k=0;k<hands[2]-1;k++){
             moveHourHands();
+            old_time_day = time%86400;
             time+=3600;
             timeTotal+=3600;
+            if(time%86400<old_time_day){
+              moveDayHands();
+            }
           }
         }
-
       }
     }
     if(time%3600==0){
       moveHourHands();
-      for(var k=0;k<hourHands-1;k++){
+      for(var k=0;k<hands[2]-1;k++){
         moveHourHands();
+        var old_time_day = time%86400;
         time+=3600;
         timeTotal+=3600;
+
+        if(time%86400<old_time_day){
+          moveDayHands();
+        }
       }
+    }
+    if(time%86400==0){
+      moveDayHands();
     }
   }
   if(time>timeMax){
@@ -64,48 +150,27 @@ function spaceClick(){
   spaceTotal+=1;
   updateDisplay();
 }
-function buyHand(num){
-  switch(num){
-    case 0://secondHands
-      secondHandCost = Math.floor(secondHandStartCost*Math.pow(coefficient,secondHands-1));
-      if(time >= secondHandCost){
-        secondHands += 1;
-        time -= secondHandCost;
-        setHands();
-      }
-      break;
-    case 1://minuteHands
-        minuteHandCost = Math.floor(minuteHandStartCost*Math.pow(coefficient,minuteHands-1));
-        if(time >= minuteHandCost){
-          minuteHands += 1;
-          time -= minuteHandCost;
-          setHands();
-        }
-        break;
-    case 2://hourHands
-        hourHandCost = Math.floor(hourHandStartCost*Math.pow(coefficient,hourHands-1));
-        if(time >= hourHandCost){
-          hourHands += 1;
-          time -= hourHandCost;
-          setHands();
-        }
-        break;
+function buyHand(n){
+  handCost[n] = Math.floor(startCost[n]*Math.pow(coefficient,hands[n]));
+  if(time >= handCost[n]){
+    hands[n] += 1;
+    time -= handCost[n];
+    setHands();
+    updateDisplay();
   }
-
-
-  updateDisplay();
 }
 
 window.setInterval(function(){
   tick+=1;
   if(tick%1==0){
-    timeClick(secondHands);
+    //timeClick(hands[0]);
+    newTimeClick(0);
   }
   if(tick%10==0){
     save();
   }
   updateDisplay();
-},1000)
+},updateTick)
 
 
 function start(){
@@ -118,33 +183,63 @@ function restart(){
   localStorage.removeItem("save");
   location.reload();
 }
+function CalculateSpeed(){
+  var speed = hands[0];
+  if(hands[1]> 0){
+    speed += ((hands[0]/60)*(hands[1]-1)*60);
+  }
+  if(hands[2]> 0){
+    speed += (speed/3600)*(hands[2]-1)*3600;
+  }
+  if(hands[3]>0){
+    speed += (speed/86400)*(hands[3]-1)*86400;
+  }
+  if(hands[4]>0){
+    speed += (speed/604800)*(hands[4]-1)*604800;
+  }
+  if(speed < 60){
+    speed = Number(Math.round(speed+'e2')+'e-2');
+    speed += " s/s";
+  }else if(speed < 3600){
+    speed = speed/60;
+    speed = Number(Math.round(speed+'e2')+'e-2');
+    speed += " m/s";
+  }else if(speed < 86400){
+    speed = speed/3600;
+    speed = Number(Math.round(speed+'e2')+'e-2');
+    speed += " hr/s";
+  }else if(speed < 604800){
+    speed = speed/86400;
+    speed = Number(Math.round(speed+'e2')+'e-2');
+    speed += " d/s";
+  }else{
+    speed = speed/604800;
+    speed = Number(Math.round(speed+'e2')+'e-2');
+    speed += " w/s";
+  }
+  return "~"+speed;
+}
 
 function updateDisplay(){
-  secondHandCost = Math.floor(secondHandStartCost*Math.pow(coefficient,secondHands-1));
-  minuteHandCost = Math.floor(minuteHandStartCost*Math.pow(coefficient,minuteHands-1));
-  hourHandCost = Math.floor(hourHandStartCost*Math.pow(coefficient,hourHands-1));
   document.getElementById("time").innerHTML = showTime(time);
+  timeSpeed = CalculateSpeed();
+  document.getElementById("timeSpeed").innerHTML = timeSpeed;
   //document.getElementById("space").innerHTML = showSpace();
-  document.getElementById("secondHandCost").innerHTML = showTime(secondHandCost);
-  document.getElementById("numSeconds").innerHTML = prettify(secondHands)+"s/s";
-  document.getElementById("minuteHandCost").innerHTML = showTime(minuteHandCost);
-  document.getElementById("numMinutes").innerHTML = prettify(minuteHands)+"m/m";
-  document.getElementById("hourHandCost").innerHTML = showTime(hourHandCost);
-  document.getElementById("numHours").innerHTML = prettify(hourHands)+"hr/hr";
-  if(timeMax>=secondUnlock){
-    document.getElementById("seconds").style.display = "table-row";
-  }else{
-    document.getElementById("seconds").style.display = "none";
-  }
-  if(timeMax>=minuteUnlock){
-    document.getElementById("minutes").style.display = "table-row";
-  }else{
-    document.getElementById("minutes").style.display = "none";
-  }
-  if(timeMax>=hourUnlock){
-    document.getElementById("hours").style.display = "table-row";
-  }else{
-    document.getElementById("hours").style.display = "none";
+  for(var i =0; i < names.length;i++){
+    handCost[i] = Math.floor(startCost[i]*Math.pow(coefficient,hands[i]));
+    var name = names[i];
+    if(timeMax>=unlock[i]){
+      document.getElementById(name).style.display = "table-row";
+      document.getElementById("num"+name).innerHTML = prettify(hands[i])+" "+unit[i]+"/"+unit[i];
+      document.getElementById(name+"HandCost").innerHTML = showTime(handCost[i]);
+    }else{
+      document.getElementById(name).style.display = "none";
+    }
+    if(hands[i]>0){
+      document.getElementById(name+"-show").style.display = "block";
+    }else{
+      document.getElementById(name+"-show").style.display = "none";
+    }
   }
   document.getElementById("realtime").innerHTML = showTime(tick);
   if(tick%10==0){
@@ -229,9 +324,11 @@ function save(){
     time: time,
     timeTotal: timeTotal,
     timeMax: timeMax,
-    secondHands: secondHands,
-    minuteHands: minuteHands,
-    hourHands: hourHands,
+    secondHands: hands[0],
+    minuteHands: hands[1],
+    hourHands: hands[2],
+    dayHands: hands[3],
+    weekHands: hands[4],
     tick: tick
   }
   localStorage.setItem("save",JSON.stringify(save));
@@ -242,9 +339,11 @@ function load(){
     if (typeof savegame.time !== "undefined") time = savegame.time;
     if (typeof savegame.timeTotal !== "undefined") timeTotal = savegame.timeTotal;
     if (typeof savegame.timeMax !== "undefined") timeMax = savegame.timeMax;
-    if (typeof savegame.secondHands !== "undefined") secondHands = savegame.secondHands;
-    if (typeof savegame.minuteHands !== "undefined") minuteHands = savegame.minuteHands;
-    if (typeof savegame.hourHands !== "undefined") hourHands = savegame.hourHands;
+    if (typeof savegame.secondHands !== "undefined") hands[0] = savegame.secondHands;
+    if (typeof savegame.minuteHands !== "undefined") hands[1] = savegame.minuteHands;
+    if (typeof savegame.hourHands !== "undefined") hands[2] = savegame.hourHands;
+    if (typeof savegame.dayHands !== "undefined") hands[3] = savegame.dayHands;
+    if (typeof savegame.weekHands !== "undefined") hands[4] = savegame.weekHands;
     if (typeof savegame.tick !== "undefined") tick = savegame.tick;
     setHands();
     updateDisplay();

@@ -7,45 +7,63 @@
   <body onload="start()">
     <h1>
       <article class="clock">
-        <div class="hours-container">
+        <div id="week-show" class="weeks-container" style= "visiblity:hidden;">
+          <div class="weeks"></div>
+        </div>
+        <div id="day-show" class="days-container" style= "visiblity:hidden;">
+          <div class="days"></div>
+        </div>
+        <div id="hour-show"class="hours-container">
           <div class="hours"></div>
         </div>
-        <div class="minutes-container">
+        <div id="minute-show"class="minutes-container">
           <div class="minutes"></div>
         </div>
-        <div class="seconds-container">
+        <div id="second-show"class="seconds-container">
           <div class="seconds"></div>
         </div>
       </article>
       <span id="time"></span><br>
+      <span id="timeSpeed"></span><br>
       <!--<span id="space"></span><br>-->
     </h1>
     <table>
       <tr>
         <th></th>
-        <th><button onclick="timeClick(1)">Make Time</button></th>
+        <th><button onclick="newTimeClick(-1)">Make Time</button></th>
       </tr>
-      <tr id="seconds">
-        <th><span id="numSeconds"></span></th>
+      <tr id="second">
+        <th><span id="numsecond"></span></th>
         <th><button onclick="buyHand(0)">Second Hand</button></th>
         <th><span id="secondHandCost"></span></th>
       </tr>
-      <tr id="minutes">
-        <th><span id="numMinutes"></span></th>
+      <tr id="minute">
+        <th><span id="numminute"></span></th>
         <th><button onclick="buyHand(1)">Minute Hand</button></th>
         <th><span id="minuteHandCost"></span></th>
       </tr>
-      <tr id="hours">
-        <th><span id="numHours"></span></th>
+      <tr id="hour">
+        <th><span id="numhour"></span></th>
         <th><button onclick="buyHand(2)">Hour Hand</button></th>
         <th><span id="hourHandCost"></span></th>
+      </tr>
+      <tr id="day">
+        <th><span id="numday"></span></th>
+        <th><button onclick="buyHand(3)">Day Hand</button></th>
+        <th><span id="dayHandCost"></span></th>
+      </tr>
+      <tr id="week">
+        <th><span id="numweek"></span></th>
+        <th><button onclick="buyHand(4)">Week Hand</button></th>
+        <th><span id="weekHandCost"></span></th>
       </tr>
     </table>
     <br><br><br>
     <span id="saving">saving...</span><br>
     <button onclick="save()">Save</button>
     <button onclick="restart()">Restart</button><br><br>
-    <span id="realtime"></span>
+    <span id="realtime"></span><br>
+    <button onclick="cheat()">Cheat</button><br><br>
     <script src="clock.js"></script>
   </body>
 </html>
