@@ -179,7 +179,6 @@ function setHands(){
   setSecondHands();
   setMinuteHands();
   setHourHands();
-  setDayHands();
 }
 /*function moveSecondHands() {
   var containers = document.querySelectorAll('.seconds-container');

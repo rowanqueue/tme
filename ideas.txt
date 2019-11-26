@@ -12,3 +12,11 @@ mass (the idea of THINGS)
 
 YOUR JOB:
 to make this universe faster than it would otherwise!
+
+
+ok lets get rid of day and week hands
+you just have the 3 and then prestige!
+prestige has options:
+- make seconds/minutes/hours take less time (probs 10% less)
+- lower initial cost of hands
+- lower coefficient cost of hands

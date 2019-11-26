@@ -7,12 +7,6 @@
   <body onload="start()">
     <h1>
       <article class="clock">
-        <div id="week-show" class="weeks-container" style= "visiblity:hidden;">
-          <div class="weeks"></div>
-        </div>
-        <div id="day-show" class="days-container" style= "visiblity:hidden;">
-          <div class="days"></div>
-        </div>
         <div id="hour-show"class="hours-container">
           <div class="hours"></div>
         </div>
@@ -47,18 +41,16 @@
         <th><button onclick="buyHand(2)">Hour Hand</button></th>
         <th><span id="hourHandCost"></span></th>
       </tr>
-      <tr id="day">
-        <th><span id="numday"></span></th>
-        <th><button onclick="buyHand(3)">Day Hand</button></th>
-        <th><span id="dayHandCost"></span></th>
-      </tr>
-      <tr id="week">
-        <th><span id="numweek"></span></th>
-        <th><button onclick="buyHand(4)">Week Hand</button></th>
-        <th><span id="weekHandCost"></span></th>
+      <tr id="prestige">
+        <th><span id="numprestige"></span></th>
+        <th><button onclick="prestigeClick()">Prestige</button></th>
+        <th><span id="prestigeCost"></span></th>
       </tr>
     </table>
     <br><br><br>
+    <span id="updateTick"></span><br>
+    <span id="timeTotalPrestige"></span><br>
+    <span id="timeTotal"></span><br>
     <span id="saving">saving...</span><br>
     <button onclick="save()">Save</button>
     <button onclick="restart()">Restart</button><br><br>
