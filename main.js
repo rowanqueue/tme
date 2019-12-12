@@ -58,7 +58,7 @@ function newTimeClick(l){
   }
   if(l==-1){
     l = 0;
-    numHands = hands[0];
+    numHands = 1;
   }
   var old_time_chunk = Math.floor(time/threshold[l]);
   var old_time_chunker = 0;
