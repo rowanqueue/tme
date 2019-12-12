@@ -326,20 +326,20 @@ function updateDisplay(){
     if(i ==0 || hands[i-1]> 1){
       document.getElementById(name).style.display = "table-row";
       document.getElementById("num"+name).innerHTML = prettify(hands[i])+" "+unit[i]+"/"+unit[i];
-      if(time>=handCost[i]){
+      /*if(time>=handCost[i]){
         document.getElementById(name+"button").style.background = "#111111";
       }else{
           document.getElementById(name+"button").style.background = "#ffffff";
-      }
+      }*/
 
       document.getElementById(name+"HandCost").innerHTML = showTimeShort(handCost[i]);
       var maxBuy = Math.floor(Math.log((time*(coefficient-1)/(startCost[i]*Math.pow(coefficient,hands[i]-1)))+1)/Math.log(coefficient));
       if(maxBuy > 1){
-        document.getElementById(name+"Max").innerHTML = prettify(maxBuy)+" "+name.charAt(0).toUpperCase()+name.slice(1)+" Hands";
+        document.getElementById(name+"Max").innerHTML = prettify(maxBuy)+" "+name.charAt(0).toUpperCase()+name.slice(1)+"s++";
         document.getElementById(name+"Max").style.background="#111111";
       }else{
         if(maxBuy == 1){
-          document.getElementById(name+"Max").innerHTML = prettify(maxBuy)+" "+name.charAt(0).toUpperCase()+name.slice(1)+" Hand";
+          document.getElementById(name+"Max").innerHTML = prettify(maxBuy)+" "+name.charAt(0).toUpperCase()+name.slice(1)+"++";
           document.getElementById(name+"Max").style.background="#111111";
         }else{
           //can't buy nothing
@@ -377,6 +377,12 @@ function updateDisplay(){
         maxPrestigeBuy = 60-prestiges[i];
       }
       document.getElementById("prestige"+i+"Max").innerHTML = prettify(maxPrestigeBuy)+" Prestiges";
+      if(maxPrestigeBuy>0){
+        document.getElementById("prestige"+i+"Max").style.background="#111111";
+      }else{
+        document.getElementById("prestige"+i+"Max").style.background="#ffffff";
+      }
+
     }else{
       document.getElementById("prestige"+i).style.display = "none";
     }
